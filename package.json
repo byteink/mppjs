@@ -1,6 +1,6 @@
 {
-  "name": "@byteink/mpxjs",
-  "version": "0.1.3",
+  "name": "@byteink/mppjs",
+  "version": "0.1.4",
   "description": "Convert Microsoft Project (.mpp) files to XML from Node, Bun, or Deno. Native binary, no JVM required.",
   "keywords": [
     "microsoft-project",
@@ -13,11 +13,11 @@
     "cli",
     "typescript"
   ],
-  "homepage": "https://github.com/byteink/mpxjs#readme",
-  "bugs": "https://github.com/byteink/mpxjs/issues",
+  "homepage": "https://github.com/byteink/mppjs#readme",
+  "bugs": "https://github.com/byteink/mppjs/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/byteink/mpxjs.git"
+    "url": "git+https://github.com/byteink/mppjs.git"
   },
   "license": "MIT",
   "author": "byteink",
@@ -32,7 +32,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "mpxjs": "dist/cli.js"
+    "mppjs": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -43,10 +43,10 @@
     "node": ">=20"
   },
   "optionalDependencies": {
-    "@byteink/mpxjs-darwin-arm64": "0.1.3",
-    "@byteink/mpxjs-linux-arm64": "0.1.3",
-    "@byteink/mpxjs-linux-x64": "0.1.3",
-    "@byteink/mpxjs-win32-x64": "0.1.3"
+    "@byteink/mppjs-darwin-arm64": "0.1.4",
+    "@byteink/mppjs-linux-arm64": "0.1.4",
+    "@byteink/mppjs-linux-x64": "0.1.4",
+    "@byteink/mppjs-win32-x64": "0.1.4"
   },
   "scripts": {
     "build:jar": "cd java && mvn -q -DskipTests package",

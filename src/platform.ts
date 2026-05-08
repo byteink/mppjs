@@ -4,10 +4,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const PLATFORM_KEYS: Record<string, string> = {
-  "darwin-arm64": "@byteink/mpxjs-darwin-arm64",
-  "linux-arm64": "@byteink/mpxjs-linux-arm64",
-  "linux-x64": "@byteink/mpxjs-linux-x64",
-  "win32-x64": "@byteink/mpxjs-win32-x64",
+  "darwin-arm64": "@byteink/mppjs-darwin-arm64",
+  "linux-arm64": "@byteink/mppjs-linux-arm64",
+  "linux-x64": "@byteink/mppjs-linux-x64",
+  "win32-x64": "@byteink/mppjs-win32-x64",
 };
 
 function currentPlatformKey(): string {
@@ -47,7 +47,7 @@ function resolveLocalDev(): string | null {
 
 /**
  * Locate the native mpxj-convert binary for the current platform.
- * Order: explicit override → installed @byteink/mpxjs-<platform> sidecar → local bin/ during dev.
+ * Order: explicit override → installed @byteink/mppjs-<platform> sidecar → local bin/ during dev.
  */
 export function resolveBinary(override?: string): string {
   if (override) {
@@ -63,7 +63,7 @@ export function resolveBinary(override?: string): string {
   const key = currentPlatformKey();
   const supported = Object.keys(PLATFORM_KEYS).join(", ");
   throw new Error(
-    `mpxjs has no prebuilt binary for ${key}. ` +
-    `Install one of: ${supported}, or set the MPXJS_BINARY env var to a local binary path.`,
+    `@byteink/mppjs has no prebuilt binary for ${key}. ` +
+    `Install one of: ${supported}, or set the MPPJS_BINARY env var to a local binary path.`,
   );
 }

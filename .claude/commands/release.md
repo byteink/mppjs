@@ -1,9 +1,9 @@
 ---
-description: Cut a new mpxjs release — bump versions, tag, push (CI publishes)
+description: Cut a new mppjs release — bump versions, tag, push (CI publishes)
 argument-hint: <version> (e.g. 0.1.1)
 ---
 
-You are cutting an `mpxjs` release. Actual building and publishing happens in
+You are cutting an `mppjs` release. Actual building and publishing happens in
 [.github/workflows/release.yml](.github/workflows/release.yml) when the tag is
 pushed — your job is the local prep and the tag push, nothing more.
 
@@ -13,7 +13,7 @@ Target version: `$ARGUMENTS` (must be SemVer, no `v` prefix).
 
 Run these checks in parallel. If any fails, stop and report; do not proceed.
 
-1. `git rev-parse --is-inside-work-tree` — repo must exist. If not, tell the user to `git init`, add a `byteink/mpxjs` remote, and commit the current tree first.
+1. `git rev-parse --is-inside-work-tree` — repo must exist. If not, tell the user to `git init`, add a `byteink/mppjs` remote, and commit the current tree first.
 2. `git status --porcelain` — working tree must be clean.
 3. `git rev-parse --abbrev-ref HEAD` — must be `main` (or confirm with the user if on another branch).
 4. `git fetch --tags && git tag -l "v$ARGUMENTS"` — tag must not already exist.
@@ -29,7 +29,7 @@ VERSION="$ARGUMENTS"
 npm pkg set version="$VERSION"
 for t in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
   (cd "packages/$t" && npm pkg set version="$VERSION")
-  npm pkg set "optionalDependencies.@byteink/mpxjs-$t=$VERSION"
+  npm pkg set "optionalDependencies.@byteink/mppjs-$t=$VERSION"
 done
 ```
 
@@ -42,7 +42,7 @@ npm install --ignore-scripts
 ## Sanity check
 
 Run `npm pack --dry-run` from the root and verify the output reports
-`name: mpxjs` and `version: $ARGUMENTS`. Do **not** publish locally — CI does
+`name: mppjs` and `version: $ARGUMENTS`. Do **not** publish locally — CI does
 that with provenance.
 
 ## Commit, tag, push
@@ -59,7 +59,7 @@ git push origin "v$ARGUMENTS"
 
 The tag push triggers [release.yml](.github/workflows/release.yml): matrix
 build on 5 runners → upload sidecar artifacts → publish each
-`@byteink/mpxjs-<platform>` then the unscoped `mpxjs`, all with `--access
+`@byteink/mppjs-<platform>` then the unscoped `mppjs`, all with `--access
 public --provenance`.
 
 ## After pushing

@@ -134,9 +134,9 @@ jobs:
           for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
             (cd "packages/${target}" && npm pkg set version="${VERSION}")
           done
-          # Update mpxjs's optionalDependencies versions to match
+          # Update mppjs's optionalDependencies versions to match
           for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
-            npm pkg set "optionalDependencies.@byteink/mpxjs-${target}=${VERSION}"
+            npm pkg set "optionalDependencies.@byteink/mppjs-${target}=${VERSION}"
           done
 
       - name: Compile TypeScript
@@ -150,7 +150,7 @@ jobs:
         run: |
           set -euo pipefail
           for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
-            echo "=== publishing @byteink/mpxjs-${target} ==="
+            echo "=== publishing @byteink/mppjs-${target} ==="
             # Leading ./ stops npm from treating the path as a github shorthand spec.
             npm publish --access public --provenance "./packages/${target}"
           done

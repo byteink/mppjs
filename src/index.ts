@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { resolveBinary } from "./platform.js";
 
 export interface ConvertOptions {
-  /** Override the binary location. Falls back to MPXJS_BINARY env var, then platform sidecar, then local dev binary. */
+  /** Override the binary location. Falls back to MPPJS_BINARY env var, then platform sidecar, then local dev binary. */
   binaryPath?: string;
   /** Milliseconds before the spawned process is killed. Default 60_000. */
   timeoutMs?: number;
@@ -33,7 +33,7 @@ export async function convert(
     ? resolve(output)
     : inputPath.replace(/\.[^./\\]+$/, "") + ".xml";
 
-  const bin = resolveBinary(options.binaryPath ?? process.env.MPXJS_BINARY);
+  const bin = resolveBinary(options.binaryPath ?? process.env.MPPJS_BINARY);
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
   await new Promise<void>((resolveP, rejectP) => {
@@ -43,7 +43,7 @@ export async function convert(
 
     const timer = setTimeout(() => {
       child.kill("SIGKILL");
-      rejectP(new Error(`mpxjs timed out after ${timeoutMs}ms`));
+      rejectP(new Error(`mppjs timed out after ${timeoutMs}ms`));
     }, timeoutMs);
 
     child.on("error", (err) => {
@@ -53,7 +53,7 @@ export async function convert(
     child.on("close", (code) => {
       clearTimeout(timer);
       if (code === 0) return resolveP();
-      rejectP(new Error(`mpxjs exited ${code}: ${stderr.trim() || "no stderr"}`));
+      rejectP(new Error(`mppjs exited ${code}: ${stderr.trim() || "no stderr"}`));
     });
   });
 
