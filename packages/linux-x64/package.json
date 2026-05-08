@@ -1,6 +1,6 @@
 {
   "name": "@byteink/mpxjs-linux-x64",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Native mpxjs binary for Linux x64.",
   "homepage": "https://github.com/byteink/mpxjs#readme",
   "repository": {
