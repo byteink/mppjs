@@ -31,7 +31,7 @@ jobs:
             runs-on: windows-2022
     runs-on: ${{ matrix.runs-on }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Liberica NIK (JDK 21 + native-image)
         uses: graalvm/setup-graalvm@v1
@@ -81,7 +81,7 @@ jobs:
           sed "s/__PLATFORM__/${target}/g" packages/_assets/README.md > "${dest}/README.md"
 
       - name: Upload sidecar artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sidecar-${{ matrix.target }}
           path: packages/${{ matrix.target }}
@@ -94,15 +94,15 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event_name == 'push' || inputs.dry-run == false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org/"
 
       - name: Download all sidecar artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
 

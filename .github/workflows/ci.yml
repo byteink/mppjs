@@ -10,7 +10,7 @@ jobs:
     name: build & test (linux-x64)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Liberica NIK
         uses: graalvm/setup-graalvm@v1
@@ -19,9 +19,9 @@ jobs:
           distribution: "liberica"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
 
       - uses: oven-sh/setup-bun@v2
 
