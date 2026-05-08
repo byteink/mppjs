@@ -23,8 +23,6 @@ jobs:
         include:
           - target: darwin-arm64
             runs-on: macos-14
-          - target: darwin-x64
-            runs-on: macos-13
           - target: linux-x64
             runs-on: ubuntu-24.04
           - target: linux-arm64
@@ -77,6 +75,7 @@ jobs:
             cp bin/mpxj-convert "${dest}/bin/mpxj-convert"
             chmod +x "${dest}/bin/mpxj-convert"
           fi
+          # darwin-x64 was dropped — no Intel-mac runner.
           cp packages/_assets/LICENSE "${dest}/LICENSE"
           cp packages/_assets/NOTICE "${dest}/NOTICE"
           sed "s/__PLATFORM__/${target}/g" packages/_assets/README.md > "${dest}/README.md"
@@ -132,11 +131,11 @@ jobs:
         run: |
           set -euo pipefail
           npm pkg set version="${VERSION}"
-          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+          for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
             (cd "packages/${target}" && npm pkg set version="${VERSION}")
           done
           # Update mpxjs's optionalDependencies versions to match
-          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+          for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
             npm pkg set "optionalDependencies.@byteink/mpxjs-${target}=${VERSION}"
           done
 
@@ -150,7 +149,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
-          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+          for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
             echo "=== publishing @byteink/mpxjs-${target} ==="
             npm publish --access public --provenance "packages/${target}"
           done

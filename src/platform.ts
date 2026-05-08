@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 
 const PLATFORM_KEYS: Record<string, string> = {
   "darwin-arm64": "@byteink/mpxjs-darwin-arm64",
-  "darwin-x64": "@byteink/mpxjs-darwin-x64",
   "linux-arm64": "@byteink/mpxjs-linux-arm64",
   "linux-x64": "@byteink/mpxjs-linux-x64",
   "win32-x64": "@byteink/mpxjs-win32-x64",

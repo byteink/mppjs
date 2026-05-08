@@ -33,7 +33,6 @@ sidecar (`@byteink/mpxjs-<platform>-<arch>`). Supported targets:
 | Platform      | Sidecar package                  |
 | ------------- | -------------------------------- |
 | macOS arm64   | `@byteink/mpxjs-darwin-arm64`    |
-| macOS x64     | `@byteink/mpxjs-darwin-x64`      |
 | Linux x64     | `@byteink/mpxjs-linux-x64`       |
 | Linux arm64   | `@byteink/mpxjs-linux-arm64`     |
 | Windows x64   | `@byteink/mpxjs-win32-x64`       |

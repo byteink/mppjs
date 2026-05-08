@@ -75,7 +75,7 @@ Test samples live under `/tmp/mpxj/junit/data/` from `git clone https://github.c
 Multi-platform sidecar pattern (esbuild/swc-style):
 
 - Main package **`mpxjs`** — pure TS, MIT, OS-agnostic. Declares each `@byteink/mpxjs-<platform>` as an `optionalDependency` with `os`/`cpu` constraints, so package managers install only the matching one.
-- Per-platform sidecars under [packages/](packages/) — `@byteink/mpxjs-{darwin-arm64,darwin-x64,linux-arm64,linux-x64,win32-x64}`, each LGPL-2.1-or-later (because they ship a binary derived from MPXJ).
+- Per-platform sidecars under [packages/](packages/) — `@byteink/mpxjs-{darwin-arm64,linux-arm64,linux-x64,win32-x64}`, each LGPL-2.1-or-later (because they ship a binary derived from MPXJ). Intel-mac (darwin-x64) was dropped because GitHub's free `macos-13` runner pool is unusable.
 - [packages/_assets/](packages/_assets/) — shared `LICENSE` (LGPL 2.1 text), `NOTICE`, `README.md` template. CI copies these into each sidecar at publish time so the repo doesn't carry 5 duplicates.
 - Binary lookup chain in [src/platform.ts](src/platform.ts): `MPXJS_BINARY` env / option override → installed `@byteink/mpxjs-<platform>` sidecar via `require.resolve` → local `bin/` (development).
 
@@ -83,7 +83,7 @@ Multi-platform sidecar pattern (esbuild/swc-style):
 
 Tag `vX.Y.Z` → [.github/workflows/release.yml](.github/workflows/release.yml) fans out:
 
-1. Matrix build on `macos-14`, `macos-13`, `ubuntu-24.04`, `ubuntu-24.04-arm`, `windows-2022` — each runs `mvn package` + `native-image`, stages the sidecar (binary + LICENSE + NOTICE + README), uploads as artifact.
+1. Matrix build on `macos-14`, `ubuntu-24.04`, `ubuntu-24.04-arm`, `windows-2022` — each runs `mvn package` + `native-image`, stages the sidecar (binary + LICENSE + NOTICE + README), uploads as artifact.
 2. Linux publish job downloads artifacts, syncs version across all `package.json` files (root + 5 sidecars), compiles TS, then `npm publish` each sidecar followed by the main package — all with `--access public --provenance`.
 
 Required secret: `NPM_TOKEN` (npm automation token with publish rights to `mpxjs` and the `@byteink` scope).

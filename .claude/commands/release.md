@@ -27,7 +27,7 @@ Use `npm pkg set` so JSON formatting is preserved. Sync all six package.jsons an
 ```bash
 VERSION="$ARGUMENTS"
 npm pkg set version="$VERSION"
-for t in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+for t in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
   (cd "packages/$t" && npm pkg set version="$VERSION")
   npm pkg set "optionalDependencies.@byteink/mpxjs-$t=$VERSION"
 done
