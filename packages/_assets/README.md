@@ -1,11 +1,11 @@
 # @byteink/mpxjs-__PLATFORM__
 
-Native binary for [`mpxjs`](https://www.npmjs.com/package/mpxjs).
+Native binary for [`@byteink/mpxjs`](https://www.npmjs.com/package/@byteink/mpxjs).
 
-You should not depend on this package directly — install `mpxjs` instead.
+You should not depend on this package directly — install `@byteink/mpxjs` instead.
 
 ```bash
-npm install mpxjs
+npm install @byteink/mpxjs
 ```
 
 This sidecar will be installed automatically on matching platforms.

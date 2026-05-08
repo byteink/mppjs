@@ -4,12 +4,12 @@ Convert Microsoft Project (`.mpp`) files to MSPDI XML from Node, Bun, or Deno.
 Native binary, **no JVM required at runtime**.
 
 ```bash
-npx mpxjs project.mpp                  # → project.xml
-npx mpxjs project.mpp out/result.xml
+npx @byteink/mpxjs project.mpp                  # → project.xml
+npx @byteink/mpxjs project.mpp out/result.xml
 ```
 
 ```ts
-import { convert } from "mpxjs";
+import { convert } from "@byteink/mpxjs";
 
 const { outputPath } = await convert("project.mpp", "out.xml");
 ```
@@ -17,14 +17,14 @@ const { outputPath } = await convert("project.mpp", "out.xml");
 ## Why
 
 The standard tool for parsing `.mpp` is [MPXJ](https://www.mpxj.org/) (Java).
-`mpxjs` ships MPXJ as a GraalVM-AOT-compiled native binary, so you get the
-parser without Docker, without a JVM, without `jpype`/IKVM, and without a
-multi-second cold start.
+`@byteink/mpxjs` ships MPXJ as a GraalVM-AOT-compiled native binary, so you
+get the parser without Docker, without a JVM, without `jpype`/IKVM, and
+without a multi-second cold start.
 
 ## Install
 
 ```bash
-npm install mpxjs        # or pnpm add mpxjs / yarn add mpxjs / bun add mpxjs
+npm install @byteink/mpxjs   # or pnpm add / yarn add / bun add
 ```
 
 The native binary for your platform is delivered via an `optionalDependencies`
@@ -42,7 +42,7 @@ If your platform isn't listed, [open an issue](https://github.com/byteink/mpxjs/
 ## API
 
 ```ts
-import { convert, type ConvertOptions, type ConvertResult } from "mpxjs";
+import { convert, type ConvertOptions, type ConvertResult } from "@byteink/mpxjs";
 
 await convert(input: string, output?: string, options?: ConvertOptions): Promise<ConvertResult>
 ```
