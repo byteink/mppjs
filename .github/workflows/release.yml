@@ -113,7 +113,12 @@ jobs:
             target="${d#artifacts/sidecar-}"
             rm -rf "packages/${target}"
             mv "${d}" "packages/${target}"
-            ls -lh "packages/${target}"
+            # GH Actions artifacts use zip and strip the +x bit. Restore it on the
+            # native binary; without this, every consumer hits EACCES on spawn.
+            if [ -f "packages/${target}/bin/mpxj-convert" ]; then
+              chmod +x "packages/${target}/bin/mpxj-convert"
+            fi
+            ls -lh "packages/${target}/bin"
           done
 
       - name: Resolve release version

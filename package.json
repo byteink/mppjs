@@ -1,6 +1,6 @@
 {
   "name": "@byteink/mppjs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Convert Microsoft Project (.mpp) files to XML from Node, Bun, or Deno. Native binary, no JVM required.",
   "keywords": [
     "microsoft-project",
@@ -43,10 +43,10 @@
     "node": ">=20"
   },
   "optionalDependencies": {
-    "@byteink/mppjs-darwin-arm64": "0.1.4",
-    "@byteink/mppjs-linux-arm64": "0.1.4",
-    "@byteink/mppjs-linux-x64": "0.1.4",
-    "@byteink/mppjs-win32-x64": "0.1.4"
+    "@byteink/mppjs-darwin-arm64": "0.1.5",
+    "@byteink/mppjs-linux-arm64": "0.1.5",
+    "@byteink/mppjs-linux-x64": "0.1.5",
+    "@byteink/mppjs-win32-x64": "0.1.5"
   },
   "scripts": {
     "build:jar": "cd java && mvn -q -DskipTests package",

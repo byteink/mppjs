@@ -1,6 +1,6 @@
 {
   "name": "@byteink/mppjs-linux-x64",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Native @byteink/mppjs binary for Linux x64.",
   "homepage": "https://github.com/byteink/mppjs#readme",
   "repository": {

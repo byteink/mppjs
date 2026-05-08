@@ -1,6 +1,6 @@
 {
   "name": "@byteink/mppjs-win32-x64",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Native @byteink/mppjs binary for Windows x64.",
   "homepage": "https://github.com/byteink/mppjs#readme",
   "repository": {
