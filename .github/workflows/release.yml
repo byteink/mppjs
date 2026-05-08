@@ -1,0 +1,161 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Skip npm publish, only build and pack"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    name: build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: darwin-arm64
+            runs-on: macos-14
+          - target: darwin-x64
+            runs-on: macos-13
+          - target: linux-x64
+            runs-on: ubuntu-24.04
+          - target: linux-arm64
+            runs-on: ubuntu-24.04-arm
+          - target: win32-x64
+            runs-on: windows-2022
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Liberica NIK (JDK 21 + native-image)
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: "liberica"
+          native-image-job-reports: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Maven (windows only)
+        if: runner.os == 'Windows'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.9
+
+      - name: Build fat jar
+        working-directory: java
+        run: mvn -B -q -DskipTests package
+
+      - name: Build native binary
+        run: >-
+          native-image
+          -H:+UnlockExperimentalVMOptions
+          --no-fallback
+          -H:+AddAllCharsets
+          -H:ConfigurationFileDirectories=.ni-config
+          -H:Name=mpxj-convert
+          -H:Path=bin
+          -jar java/target/mpxj-convert.jar
+
+      - name: Stage sidecar package
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="${{ matrix.target }}"
+          dest="packages/${target}"
+          mkdir -p "${dest}/bin"
+          if [ "${target}" = "win32-x64" ]; then
+            cp bin/mpxj-convert.exe "${dest}/bin/mpxj-convert.exe"
+          else
+            cp bin/mpxj-convert "${dest}/bin/mpxj-convert"
+            chmod +x "${dest}/bin/mpxj-convert"
+          fi
+          cp packages/_assets/LICENSE "${dest}/LICENSE"
+          cp packages/_assets/NOTICE "${dest}/NOTICE"
+          sed "s/__PLATFORM__/${target}/g" packages/_assets/README.md > "${dest}/README.md"
+
+      - name: Upload sidecar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sidecar-${{ matrix.target }}
+          path: packages/${{ matrix.target }}
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: publish to npm
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' || inputs.dry-run == false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Download all sidecar artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Restore sidecar packages
+        run: |
+          set -euo pipefail
+          for d in artifacts/sidecar-*; do
+            target="${d#artifacts/sidecar-}"
+            rm -rf "packages/${target}"
+            mv "${d}" "packages/${target}"
+            ls -lh "packages/${target}"
+          done
+
+      - name: Resolve release version
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sync version across all package.jsons
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm pkg set version="${VERSION}"
+          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+            (cd "packages/${target}" && npm pkg set version="${VERSION}")
+          done
+          # Update mpxjs's optionalDependencies versions to match
+          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+            npm pkg set "optionalDependencies.@byteink/mpxjs-${target}=${VERSION}"
+          done
+
+      - name: Compile TypeScript
+        run: |
+          npm ci || npm install
+          npm run build:ts
+
+      - name: Publish sidecar packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64 win32-x64; do
+            echo "=== publishing @byteink/mpxjs-${target} ==="
+            npm publish --access public --provenance "packages/${target}"
+          done
+
+      - name: Publish main package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance

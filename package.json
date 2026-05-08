@@ -1,0 +1,64 @@
+{
+  "name": "mpxjs",
+  "version": "0.1.0",
+  "description": "Convert Microsoft Project (.mpp) files to XML from Node, Bun, or Deno. Native binary, no JVM required.",
+  "keywords": [
+    "microsoft-project",
+    "mpp",
+    "mspdi",
+    "mpxj",
+    "graalvm",
+    "native-image",
+    "converter",
+    "cli",
+    "typescript"
+  ],
+  "homepage": "https://github.com/byteink/mpxjs#readme",
+  "bugs": "https://github.com/byteink/mpxjs/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byteink/mpxjs.git"
+  },
+  "license": "MIT",
+  "author": "byteink",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "mpxjs": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "optionalDependencies": {
+    "@byteink/mpxjs-darwin-arm64": "0.1.0",
+    "@byteink/mpxjs-darwin-x64": "0.1.0",
+    "@byteink/mpxjs-linux-arm64": "0.1.0",
+    "@byteink/mpxjs-linux-x64": "0.1.0",
+    "@byteink/mpxjs-win32-x64": "0.1.0"
+  },
+  "scripts": {
+    "build:jar": "cd java && mvn -q -DskipTests package",
+    "build:native": "native-image -H:+UnlockExperimentalVMOptions --no-fallback -H:+AddAllCharsets -H:ConfigurationFileDirectories=.ni-config -H:Name=mpxj-convert -H:Path=bin -jar java/target/mpxj-convert.jar",
+    "build:ts": "tsc -p tsconfig.json",
+    "build": "npm run build:jar && npm run build:native && npm run build:ts",
+    "test": "bun test test/",
+    "prepublishOnly": "npm run build:ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@byteink/mpxjs-darwin-arm64",
+  "version": "0.1.0",
+  "description": "Native mpxjs binary for macOS arm64 (Apple Silicon).",
+  "homepage": "https://github.com/byteink/mpxjs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byteink/mpxjs.git",
+    "directory": "packages/darwin-arm64"
+  },
+  "license": "LGPL-2.1-or-later",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "files": ["bin", "README.md", "LICENSE", "NOTICE"],
+  "preferUnplugged": true
+}

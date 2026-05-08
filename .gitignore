@@ -1,0 +1,16 @@
+node_modules/
+dist/
+java/target/
+bin/mpxj-convert
+bin/mpxj-convert.exe
+
+# .ni-config/ is committed — it's the GraalVM reflection metadata required
+# by the native-image build in CI. Regenerated only when MPXJ is bumped.
+
+# Sidecar binaries and license files are CI-generated, not committed.
+# The shared sources live in packages/_assets/ and must stay tracked.
+packages/*/bin/
+packages/*/LICENSE
+packages/*/NOTICE
+packages/*/README.md
+!packages/_assets/**

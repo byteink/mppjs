@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: build & test (linux-x64)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Liberica NIK
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: "liberica"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Build fat jar
+        working-directory: java
+        run: mvn -B -q -DskipTests package
+
+      - name: Build native binary
+        run: >-
+          native-image
+          -H:+UnlockExperimentalVMOptions
+          --no-fallback
+          -H:+AddAllCharsets
+          -H:ConfigurationFileDirectories=.ni-config
+          -H:Name=mpxj-convert
+          -H:Path=bin
+          -jar java/target/mpxj-convert.jar
+
+      - name: Compile TS
+        run: |
+          npm install
+          npm run build:ts
+
+      - name: Clone MPXJ samples
+        run: git clone --depth 1 https://github.com/joniles/mpxj /tmp/mpxj
+
+      - name: Run tests
+        run: bun test test/
