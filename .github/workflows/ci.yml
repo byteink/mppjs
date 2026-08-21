@@ -49,4 +49,7 @@ jobs:
         run: git clone --depth 1 https://github.com/joniles/mpxj /tmp/mpxj
 
       - name: Run tests
+        env:
+          # Test the binary this job just built, not a published sidecar pulled in by npm install.
+          MPPJS_BINARY: ${{ github.workspace }}/bin/mpxj-convert
         run: bun test test/
