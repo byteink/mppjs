@@ -53,3 +53,17 @@ jobs:
           # Test the binary this job just built, not a published sidecar pulled in by npm install.
           MPPJS_BINARY: ${{ github.workspace }}/bin/mpxj-convert
         run: bun test test/
+
+      # The runner has a JDK (it just built with GraalVM), so it cannot catch a
+      # binary that silently depends on one. 0.1.5 and 0.1.6 both shipped broken
+      # for exactly that reason: MPXJ read Gantt presentation data, which loads
+      # java.awt and dlopens libawt.so. Convert one file with nothing but the
+      # binary, in a container with no JDK, and fail the build if it cannot.
+      - name: Verify the binary runs without a JDK
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "${{ github.workspace }}/bin/mpxj-convert:/mpxj-convert:ro" \
+            -v /tmp/mpxj/junit/data:/data:ro \
+            debian:12-slim \
+            /mpxj-convert /data/DurationTest9.mpp /tmp/out.xml
