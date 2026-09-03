@@ -124,10 +124,20 @@ jobs:
       - name: Resolve release version
         id: version
         run: |
+          set -euo pipefail
+          pkg=$(node -p "require('./package.json').version")
+          # A tag release must match the committed version. The sync step below
+          # only rewrites package.json inside the runner, so a mismatch here
+          # would publish a version the repo never records - which is how
+          # package.json drifted to 0.1.5 while npm served 0.1.6.
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+            tag="${GITHUB_REF#refs/tags/v}"
+            if [ "${pkg}" != "${tag}" ]; then
+              echo "package.json version (${pkg}) does not match tag (${tag})"; exit 1
+            fi
+            echo "version=${tag}" >> "$GITHUB_OUTPUT"
           else
-            echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+            echo "version=${pkg}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Sync version across all package.jsons

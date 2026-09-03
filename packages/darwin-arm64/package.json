@@ -1,6 +1,6 @@
 {
   "name": "@byteink/mppjs-darwin-arm64",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Native @byteink/mppjs binary for macOS arm64 (Apple Silicon).",
   "homepage": "https://github.com/byteink/mppjs#readme",
   "repository": {
