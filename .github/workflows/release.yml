@@ -21,7 +21,7 @@ jobs:
       matrix:
         include:
           - target: darwin-arm64
-            runs-on: macos-14
+            runs-on: macos-15
           - target: linux-x64
             runs-on: ubuntu-24.04
           - target: linux-arm64
@@ -49,6 +49,9 @@ jobs:
         run: mvn -B -q -DskipTests package
 
       - name: Build native binary
+        env:
+          # Keep the published macOS 14 compatibility floor on newer runners.
+          MACOSX_DEPLOYMENT_TARGET: "14.0"
         run: >-
           native-image
           -H:+UnlockExperimentalVMOptions
@@ -58,6 +61,16 @@ jobs:
           -H:Name=mpxj-convert
           -H:Path=bin
           -jar java/target/mpxj-convert.jar
+
+      - name: Verify macOS binary compatibility
+        if: runner.os == 'macOS'
+        run: |
+          set -euo pipefail
+          architecture=$(lipo -archs bin/mpxj-convert)
+          minimum=$(otool -l bin/mpxj-convert | awk '$1 == "minos" { print $2 }')
+          if [ "${architecture}" != "arm64" ] || [ "${minimum}" != "14.0" ]; then
+            echo "Expected arm64/macOS 14.0; got ${architecture}/macOS ${minimum}"; exit 1
+          fi
 
       - name: Stage sidecar package
         shell: bash
