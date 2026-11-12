@@ -86,6 +86,6 @@ Tag `vX.Y.Z` → [.github/workflows/release.yml](.github/workflows/release.yml) 
 1. Matrix build on `macos-14`, `ubuntu-24.04`, `ubuntu-24.04-arm`, `windows-2022` — each runs `mvn package` + `native-image`, stages the sidecar (binary + LICENSE + NOTICE + README), uploads as artifact.
 2. Linux publish job downloads artifacts, syncs version across all `package.json` files (root + 4 sidecars), compiles TS, then `npm publish` each sidecar followed by the main package — all with `--access public --provenance`.
 
-Required secret: `NPM_TOKEN` (npm automation token with publish rights to the `@byteink` scope).
+Configure npm trusted publishing for all five packages with owner `byteink`, repository `mppjs`, workflow `release.yml`, and direct publishing allowed.
 
 [.github/workflows/ci.yml](.github/workflows/ci.yml) runs on PRs/main: builds + tests on `linux-x64` only — the matrix is reserved for releases to keep CI fast.
