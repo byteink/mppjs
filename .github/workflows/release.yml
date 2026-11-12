@@ -54,6 +54,7 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: "14.0"
         run: >-
           native-image
+          -EMACOSX_DEPLOYMENT_TARGET
           -H:+UnlockExperimentalVMOptions
           --no-fallback
           -H:+AddAllCharsets
