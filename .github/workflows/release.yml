@@ -54,6 +54,7 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: "14.0"
         run: >-
           native-image
+          -EMACOSX_DEPLOYMENT_TARGET
           -H:+UnlockExperimentalVMOptions
           --no-fallback
           -H:+AddAllCharsets
@@ -181,6 +182,28 @@ jobs:
             # Leading ./ stops npm from treating the path as a github shorthand spec.
             npm publish --access public --provenance "./packages/${target}"
           done
+
+      - name: Wait for sidecar availability
+        timeout-minutes: 20
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          for attempt in {1..30}; do
+            ready=true
+            for target in darwin-arm64 linux-arm64 linux-x64 win32-x64; do
+              if ! npm view "@byteink/mppjs-${target}@${VERSION}" version --fetch-retries=0 --fetch-timeout=5000 >/dev/null 2>&1; then
+                ready=false
+              fi
+            done
+            if [ "${ready}" = "true" ]; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 30 ]; then
+              sleep 30
+            fi
+          done
+          echo "Sidecar packages did not become available before the publish timeout"; exit 1
 
       - name: Publish main package
         run: npm publish --access public --provenance
