@@ -22,7 +22,7 @@ Run these checks in parallel. If any fails, stop and report; do not proceed.
 
 ## Bump versions
 
-Use `npm pkg set` so JSON formatting is preserved. Sync all six package.jsons and the optionalDependencies:
+Use `npm pkg set` so JSON formatting is preserved. Sync all five package.jsons and the optionalDependencies:
 
 ```bash
 VERSION="$ARGUMENTS"
@@ -42,7 +42,7 @@ npm install --ignore-scripts
 ## Sanity check
 
 Run `npm pack --dry-run` from the root and verify the output reports
-`name: mppjs` and `version: $ARGUMENTS`. Do **not** publish locally — CI does
+`name: @byteink/mppjs` and `version: $ARGUMENTS`. Do **not** publish locally — CI does
 that with provenance.
 
 ## Commit, tag, push
@@ -58,8 +58,8 @@ git push origin "v$ARGUMENTS"
 ```
 
 The tag push triggers [release.yml](.github/workflows/release.yml): matrix
-build on 5 runners → upload sidecar artifacts → publish each
-`@byteink/mppjs-<platform>` then the unscoped `mppjs`, all with `--access
+build on 4 runners → upload sidecar artifacts → publish each
+`@byteink/mppjs-<platform>` then `@byteink/mppjs`, all with `--access
 public --provenance`.
 
 ## After pushing
@@ -67,8 +67,8 @@ public --provenance`.
 Report the tag URL and the Actions run URL so the user can watch it. Do not
 poll. Remind them once that:
 
-- The `@byteink` scope must exist on npm under the account that owns
-  `NPM_TOKEN`, or sidecar publishes will 403.
+- All five npm packages must have trusted publishing configured for
+  `byteink/mppjs` and `release.yml`, with direct publishing allowed.
 - If a single platform build fails, the publish job won't run — fix and
   re-tag with a patch bump (`v$ARGUMENTS` is now burned even if nothing
   shipped).
